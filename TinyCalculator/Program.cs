@@ -1,20 +1,27 @@
 ﻿Console.WriteLine("== Tiny calculator ==");
 
-ICalculation operation = ChooseOperator();
-
-int leftOperand = ReadNumber(operation.LeftOperandName);
-int rightOperand = ReadNumber(operation.RightOperandName);
-if (operation.Calculate(leftOperand, rightOperand, out string? errorMessage) is int result)
+int result = ReadNumber("Start value");
+while (result > 1)
 {
-    Console.ForegroundColor = ConsoleColor.Green;
-    Console.WriteLine($"{leftOperand} {operation.Operator} {rightOperand} = {result}");
-    Console.ResetColor();
-}
-else
-{
-    Console.ForegroundColor = ConsoleColor.Red;
-    Console.WriteLine(errorMessage);
-    Console.ResetColor();
+    ICalculation operation = ChooseOperator();
+    int rightOperand = ReadNumber(operation.RightOperandName);
+    if (operation.Calculate(result, rightOperand, out string? errorMessage) is int nextResult)
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"{result} {operation.Operator} {rightOperand} = {nextResult}");
+        result = nextResult;
+        Console.ResetColor();
+    }
+    else
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(errorMessage);
+        Console.ResetColor();
+    }
+    if (result <= 1)
+    {
+        break;
+    }
 }
 
 static int ReadNumber(string name)
@@ -52,7 +59,6 @@ ICalculation ChooseOperator()
 
 interface ICalculation
 {
-    string LeftOperandName { get; }
     string Operator { get; }
     string RightOperandName { get; }
     int? Calculate(int a, int b, out string? errorMessage);
@@ -60,7 +66,6 @@ interface ICalculation
 
 class Addition : ICalculation
 {
-    public string LeftOperandName => "Summand 1";
     public string Operator => "+";
     public string RightOperandName => "Summand 2";
     public int? Calculate(int a, int b, out string? errorMessage)
@@ -72,7 +77,6 @@ class Addition : ICalculation
 
 class Subtraction : ICalculation
 {
-    public string LeftOperandName => "Minuend";
     public string RightOperandName => "Subtrahend";
     public string Operator => "-";
     public int? Calculate(int a, int b, out string? errorMessage)
@@ -84,7 +88,6 @@ class Subtraction : ICalculation
 
 class Division : ICalculation
 {
-    public string LeftOperandName => "Dividend";
     public string RightOperandName => "Divisor";
     public string Operator => "/";
     public int? Calculate(int a, int b, out string? errorMessage)
@@ -101,7 +104,6 @@ class Division : ICalculation
 
 class Multiplication : ICalculation
 {
-    public string LeftOperandName => "Factor 1";
     public string RightOperandName => "Factor 2";
     public string Operator => "*";
     public int? Calculate(int a, int b, out string? errorMessage)
