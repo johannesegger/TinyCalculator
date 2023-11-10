@@ -1,7 +1,7 @@
 ﻿Console.WriteLine("== Tiny calculator ==");
 
 int result = ReadNumber("Dividend");
-while (true)
+while (result > 1)
 {
     int divisor = ReadNumber("Divisor");
 
